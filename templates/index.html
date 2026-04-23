@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Password Strength Checker | Prajwol Acharya's Project </title>
+  <meta
+    name="description"
+    content="A Flask-based password strength checker that analyzes entropy, patterns, and complexity to help users create more secure passwords."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Roboto+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="grid-overlay"></div>
+  <div class="scanline"></div>
+
+  <main class="app-shell">
+    <section class="hero-panel">
+      <p class="eyebrow">Project</p>
+      <h1>Password Strength Checker</h1>
+      <p class="intro">
+        Analyze passwords in real time using length, complexity, entropy, common patterns,
+        and a basic wordlist check to understand safer credential practices.
+      </p>
+
+      <div class="input-panel">
+        <label for="passwordInput">Test a password</label>
+        <div class="input-wrap">
+          <input
+            id="passwordInput"
+            type="password"
+            placeholder="Enter a password to analyze"
+            autocomplete="off"
+          />
+          <button id="togglePassword" type="button">Show</button>
+        </div>
+
+        <div class="meter">
+          <div id="meterFill" class="meter-fill"></div>
+        </div>
+
+        <div class="summary-row">
+          <div>
+            <span class="summary-label">Strength</span>
+            <strong id="strengthLabel">Very Weak</strong>
+          </div>
+          <div>
+            <span class="summary-label">Score</span>
+            <strong id="strengthScore">0/100</strong>
+          </div>
+          <div>
+            <span class="summary-label">Entropy</span>
+            <strong id="entropyValue">0 bits</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="details-grid">
+      <article class="panel">
+        <h2>Security Checklist</h2>
+        <ul class="checklist">
+          <li id="check-length">At least 8 characters</li>
+          <li id="check-uppercase">Contains uppercase letters</li>
+          <li id="check-lowercase">Contains lowercase letters</li>
+          <li id="check-number">Contains numbers</li>
+          <li id="check-special">Contains special characters</li>
+        </ul>
+      </article>
+
+      <article class="panel">
+        <h2>Feedback</h2>
+        <div id="badges" class="badges"></div>
+        <ul id="suggestions" class="suggestions">
+          <li>Start typing to receive security feedback.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const passwordInput = document.getElementById("passwordInput");
+    const togglePassword = document.getElementById("togglePassword");
+    const meterFill = document.getElementById("meterFill");
+    const strengthLabel = document.getElementById("strengthLabel");
+    const strengthScore = document.getElementById("strengthScore");
+    const entropyValue = document.getElementById("entropyValue");
+    const suggestions = document.getElementById("suggestions");
+    const badges = document.getElementById("badges");
+
+    const checkMap = {
+      length: document.getElementById("check-length"),
+      uppercase: document.getElementById("check-uppercase"),
+      lowercase: document.getElementById("check-lowercase"),
+      number: document.getElementById("check-number"),
+      special: document.getElementById("check-special"),
+    };
+
+    const labelColors = {
+      "Very Weak": "#ff335f",
+      Weak: "#ff6a3d",
+      Moderate: "#ffbb33",
+      Strong: "#6dff9f",
+      "Very Strong": "#00ff88",
+    };
+
+    async function analyzePassword(password) {
+      const response = await fetch("/check", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+
+      return response.json();
+    }
+
+    function renderResult(result) {
+      meterFill.style.width = `${result.score}%`;
+      meterFill.style.background = `linear-gradient(90deg, #ff0040, ${labelColors[result.label]})`;
+      strengthLabel.textContent = result.label;
+      strengthLabel.style.color = labelColors[result.label];
+      strengthScore.textContent = `${result.score}/100`;
+      entropyValue.textContent = `${result.entropy} bits`;
+
+      Object.entries(result.checks).forEach(([key, passed]) => {
+        checkMap[key].classList.toggle("passed", passed);
+      });
+
+      badges.innerHTML = "";
+      if (result.common_password) {
+        const badge = document.createElement("span");
+        badge.className = "badge danger";
+        badge.textContent = "Common Password";
+        badges.appendChild(badge);
+      }
+
+      result.patterns.forEach((pattern) => {
+        const badge = document.createElement("span");
+        badge.className = "badge warning";
+        badge.textContent = pattern;
+        badges.appendChild(badge);
+      });
+
+      suggestions.innerHTML = "";
+      const items = result.suggestions.length
+        ? result.suggestions
+        : ["Good job. This password meets the main baseline checks."];
+
+      items.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        suggestions.appendChild(li);
+      });
+    }
+
+    passwordInput.addEventListener("input", async (event) => {
+      const password = event.target.value;
+      const result = await analyzePassword(password);
+      renderResult(result);
+    });
+
+    togglePassword.addEventListener("click", () => {
+      const isPassword = passwordInput.type === "password";
+      passwordInput.type = isPassword ? "text" : "password";
+      togglePassword.textContent = isPassword ? "Hide" : "Show";
+    });
+  </script>
+</body>
+</html>
