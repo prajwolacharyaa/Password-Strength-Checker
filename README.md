@@ -15,16 +15,6 @@ A web-based Password Strength Checker built using Python and Flask. This project
 
 ---
 
-# Tech Stack
-
-- Python  
-- Flask  
-- HTML  
-- CSS  
-
-
----
-
 # Project Structure
 
 app.py → Main Flask application  
