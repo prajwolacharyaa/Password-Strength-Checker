@@ -26,6 +26,7 @@ cd Password-Strength-Checker
 ![Step 2](assets/step2.png)
 
 Step 3: Install Requirements & Run App  
+
 pip install -r requirements.txt
 python app.py
 ![Step 3](assets/step3.png)
