@@ -14,17 +14,7 @@ A web-based Password Strength Checker built using Python and Flask. This project
 - Instant feedback on password security  
 
 ---
-
-# Project Structure
-
-app.py → Main Flask application  
-checker/ → Core logic (strength, entropy, patterns)  
-templates/ → HTML pages  
-static/ → CSS files  
-data/ → Common password dataset  
-requirements.txt → Dependencies  
-
----
+ 
 
 # Installation & Setup (Kali Linux)
 
