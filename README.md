@@ -15,51 +15,23 @@ A web-based Password Strength Checker built using Python and Flask. This project
 
 ---
  
-
 # Installation & Setup (Kali Linux)
 
-## Step 1: Clone the repository
-
-git clone https://github.com/prajwolacharyaa/Password-Strength-Checker.git
-
----
-
-## Step 2: Open project folder
-
-cd Password-Strength-Checker
-
----
-
-## Step 3: Install dependencies
-
-pip install -r requirements.txt
-
----
-
-## Step 4: Run the application
-
-python app.py
-
----
-
-## Step 5: Open in browser
-
-http://127.0.0.1:5000
-
----
-
-# Screenshots
-
 Step 1: Clone Repository  
+git clone https://github.com/prajwolacharyaa/Password-Strength-Checker.git
 ![Step 1](assets/step1.png)
 
 Step 2: Open Project Folder  
+cd Password-Strength-Checker
 ![Step 2](assets/step2.png)
 
 Step 3: Install Requirements & Run App  
+pip install -r requirements.txt
+python app.py
 ![Step 3](assets/step3.png)
 
-Step 4: Open Local Server  
+Step 4: Open Local Server 
+http://127.0.0.1:5000
 ![Step 4](assets/step4.png)
 
 ---
